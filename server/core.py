@@ -9,27 +9,19 @@ import socket
 
 class Game:
     def __init__(self):
-        self.defaultGrid = ["--------------------------",
-                    "--------------------------",
-                    "--------------------------",
-                    "--------------------------",
-                    "--------------------------"]
-        self.playerOne = [2,2] # initial position
-        self.playerTwo = [25,2] # initial position
+        self.defaultGrid = list("--------------------------")
+        self.playerOne = 2 # initial position
+        self.playerTwo = 25 # initial position
 
-    def update_grid(self, playerOne: list = [2,2], playerTwo: list = [25,2]):
+    def update_grid(self, playerOne: int, playerTwo: int):
         playerOne = self.playerOne
         playerTwo = self.playerTwo
-        updateGrid = self.defaultGrid[playerOne[1]]
-        updatedGrid = ""
-        x = 0
-        for pos in updateGrid:
-            if x == playerOne[0] or x == playerTwo[0]:
-                updatedGrid += "x"
-            else:
-                updatedGrid += "-"
-            x += 1
-        self.defaultGrid[playerOne[1]] = updatedGrid
+        self.defaultGrid = list("--------------------------")
+        for i in range(len(self.defaultGrid)):
+            if i+1 == playerOne:
+                self.defaultGrid[i] = "x"
+            if i+1 == playerTwo:
+                self.defaultGrid[i] = "y"
         return self.defaultGrid
 
     def handle_move(self, direction: str, player: int):
@@ -41,58 +33,15 @@ class Game:
         playerOne = self.playerOne
         playerTwo = self.playerTwo
         match direction: # undertale vibes
-            case "up":
-                if player == 1:
-                    if playerTwo == [playerOne[0], (playerOne[1]+1)]:
-                        return 401 # something is already there
-                    if playerOne[1]+1 > 4:
-                        return 402 # out of bounds
-                    playerOne = [playerOne[0], (playerOne[1]+1)]
-                if player == 2:
-                    if playerOne == [playerTwo[0], (playerTwo[1]+1)]:
-                        return 401 # something is already there
-                    if playerTwo[1]+1 > 4:
-                        return 402 # out of bounds
-                    playerTwo = [playerOne[0], (playerOne[1]+1)]
-            case "down":
-                if player == 1:
-                    if playerTwo == [playerOne[0], (playerOne[1]-1)]:
-                        return 401
-                    if playerOne[1]-1 < 0:
-                        return 402
-                    playerOne = [playerOne[0], (playerOne[1]-1)]
-                if player == 2:
-                    if playerOne == [playerTwo[0], (playerTwo[1]-1)]:
-                        return 401
-                    if playerTwo[1]-1 < 0:
-                        return 402
-                    playerTwo = [playerTwo[0], (playerTwo[1]-1)]
             case "left":
-                if player == 1:
-                    if playerTwo == [(playerOne[0]-1), playerOne[1]]:
-                        return 401
-                    if playerOne[0]-1 < 0:
-                        return 402
-                    playerOne = [(playerOne[0]-1), playerOne[1]]
-                if player == 2:
-                    if playerOne == [(playerTwo[0]-1), playerTwo[1]]:
-                        return 401
-                    if playerTwo[0]-1 < 0:
-                        return 402
-                    playerTwo = [(playerTwo[0]-1), playerTwo[1]]
-            case "right":
-                if player == 1:
-                    if playerTwo == [(playerOne[0]+1), playerOne[1]]:
-                        return 401
-                    if playerOne[0]-1 > 25:
-                        return 402
-                    playerOne = [(playerOne[0]+1), playerOne[1]]
-                if player == 2:
-                    if playerOne == [(playerTwo[0]+1), playerTwo[1]]:
-                        return 401
-                    if playerTwo[0]-1 > 25:
-                        return 402
-                    playerTwo = [(playerTwo[0]+1), playerTwo[1]]
+                match player:
+                    case 1:
+                        self.playerOne += 1
+                        return self.update_grid(playerOne+1,playerTwo)
+
+a = Game()
+print(a.handle_move("left", 1))
+print(a.handle_move("left", 1))
 
 def server_program():
     host = socket.gethostname() # user's host name
@@ -125,5 +74,5 @@ def server_program():
 
     conn.close()  # close the connection
 
-if __name__ == '__main__': # if not imported, start server
-    server_program()
+#if __name__ == '__main__': # if not imported, start server
+#    server_program()
